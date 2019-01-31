@@ -1,0 +1,8 @@
+neobundle.vim
+tagbar
+unite-outline
+unite.vim
+vim-go-extra
+vim-godef
+vimfiler
+vimproc
