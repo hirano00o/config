@@ -1,4 +1,4 @@
-set term=term-256color              " 256色で表示する
+set term=xterm-256color             " 256色で表示する
 set encoding=utf-8                  " エンコーディングをUTF-8にする
 set fileencodings=utf-8,sjis,cp932  " 設定の順番の文字コードでファイルを開く
 set fileformats=unix,dos,mac        " 設定の順番で改行コードを開く
@@ -34,6 +34,7 @@ set incsearch                       " リアルタイム検索する
 set wrapscan                        " 最後まで検索すると、最初に戻る
 set hlsearch                        " 検索結果をハイライト表示する
 
+set scrolloff=3                     " 3行前から画面をスクロールする
 set nowrap                          " テキストの折返しをしない
 set ruler                           " ルーラーを表示する
 " カラムラインを120列目に引く
@@ -97,7 +98,7 @@ let g:lightline = {
 let g:lightline.component = {
     \ 'lineinfo': '[%3l/%3L]:%-2v'
     \ }
-set noshowmode                      " vimのモードを非表示にする
+"set noshowmode                      " vimのモードを非表示にする
 set laststatus=2                    " ステータスラインを常に表示する
 set cmdheight=2                     " ステータスライン下のメッセージ表示行数
 

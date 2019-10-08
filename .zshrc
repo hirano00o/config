@@ -1,27 +1,29 @@
 export LANG=ja_JP.UTF-8
-export PATH="$HOME/bin:$PATH"
+# ${fg[blue]}等で色が利用できるようにする
 autoload -Uz colors
 colors
+# 補完を利用
 autoload -Uz compinit
 compinit
-bindkey -e
-setopt share_history
-setopt histignorealldups
+bindkey -v # vimキーバインド
+setopt share_history # 他ターミナルとヒストリを共有
+setopt histignorealldups # ヒストリを重複表示しない
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-setopt auto_pushd
-setopt pushd_ignore_dups
+HISTTIMEFORMAT="[%Y/%M/%D %H:%M:%S] "
+
+setopt auto_param_slash # ディレクトリ名の補完で末尾に / を付加
+setopt magic_equal_subst # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+
+setopt auto_pushd # 遷移したディレクトリをスタックする
+setopt pushd_ignore_dups # 重複したディレクトリはスタックしない
 alias ls='ls -G'
 alias ll='ls -lG'
-alias vi='vim'
 
 # backspace,deleteキーを使えるように
-stty erase ^H
-bindkey "^[[3~" delete-char
-
-# どこからでも参照できるディレクトリパス
-cdpath=(~)
+# stty erase ^H
+# bindkey "^[[3~" delete-char
 
 # 区切り文字の設定
 autoload -Uz select-word-style
@@ -33,11 +35,24 @@ zstyle ':zle:*' word-style unspecified
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})%n${reset_color}@${fg[blue]}%m${reset_color}(%*%) %~
 %# "
 
-# 補完後、メニュー選択モードになり左右キーで移動が出来る
-zstyle ':completion:*:default' menu select=2
+local DEFAULT=$'%{^[[m%}'$
+local RED=$'%{^[[1;31m%}'$
+local YELLOW=$'%{^[[1;33m%}'$
 
-# 補完で大文字にもマッチ
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*:default' menu select=2 # 補完後、メニュー選択モードになり左右キーで移動が出来る
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # 補完で大文字にもマッチ
+zstyle ':completion:*' verbose true # 補完を詳細に表示
+zstyle ':completion:*' use-cache true # キャッシュによる補完の高速化
+zstyle ':completion:*' completer _expand _complete _history _prefix # 補完の出し方
+zstyle ':completion:*:messages' format '%F{YELLOW}%d'$DEFAULT
+zstyle ':completion:*:warnings' format '%F{RED}No matches for:''%F{YELLOW} %d'$DEFAULT
+zstyle ':completion:*:descriptions' format '%F{YELLOW}completing %B%d%b'$DEFAULT
+zstyle ':completion:*:corrections' format '%F{YELLOW}%B%d ''%F{RED}(errors: %e)%b'$DEFAULT
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*' group-name ''
+
+export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # 補完候補に色を付ける
 
 # 複数ファイルのmv 例　zmv *.txt *.txt.bk
 autoload -Uz zmv
@@ -63,6 +78,7 @@ function is_screen_or_tmux_running() { is_screen_running || is_tmux_runnning; }
 function shell_has_started_interactively() { [ ! -z "$PS1" ]; }
 function is_ssh_running() { [ ! -z "$SSH_CONECTION" ]; }
 
+# zsh起動時にtmuxをattach
 function tmux_automatically_attach_session()
 {
   if is_screen_or_tmux_running; then
@@ -115,14 +131,29 @@ function tmux_automatically_attach_session()
 }
 tmux_automatically_attach_session
 
+# hyper用設定
+title() { export TITLE_OVERRIDDEN=1; echo -en "\e]0;$*\a"}
+autotitle() { export TITLE_OVERRIDDEN=0 }; autotitle
+overridden() { [[ $TITLE_OVERRIDDEN == 1 ]]; }
+gitDirty() { [[ $(git status 2> /dev/null | grep -o '\w\+' | tail -n1) != ("clean"|"") ]] && echo "*" }
 
-export GOPATH=$HOME/go/third-party:$HOME/go/my-project
-export PATH=$HOME/go/third-party/bin:$HOME/go/my-project/bin:$PATH
+tabtitle_precmd() {
+   if overridden; then return; fi
+   pwd=$(pwd) # Store full path as variable
+   cwd=${pwd##*/} # Extract current working dir only
+   print -Pn "\e]0;$cwd$(gitDirty)\a" # Replace with $pwd to show full path
+}
+[[ -z $precmd_functions ]] && precmd_functions=()
+precmd_functions=($precmd_functions tabtitle_precmd)
 
-export AWS_ACCESS_KEY_ID="AKIAJJEA7ZOBPR5MBCTQ"
-export AWS_SECRET_ACCESS_KEY="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"
+tabtitle_preexec() {
+   if overridden; then return; fi
+   printf "\033]0;%s\a" "${1%% *} | $cwd$(gitDirty)" # Omit construct from $1 to show args
+}
+[[ -z $preexec_functions ]] && preexec_functions=()
+preexec_functions=($preexec_functions tabtitle_preexec)
 
-export ANDROID_HOME=/Users/hirano00o/Library/Android/sdk
-export ANDROID_NDK_HOME=/Users/hirano00o/Library/Android/sdk/ndk-bundle
+# 個別環境設定
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
 
-export PATH=$PATH:$ANDROID_HOME:$ANDROID_NDK_HOME:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
