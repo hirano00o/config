@@ -81,6 +81,7 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'othree/javascript-libraries-syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'othree/html5.vim'
     Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
+    " jsbeautifyの設定 -> https://github.com/maksimr/vim-jsbeautify#examples
     Plug 'maksimr/vim-jsbeautify'
   call plug#end()
 endif
