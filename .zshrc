@@ -153,11 +153,4 @@ tabtitle_preexec() {
 [[ -z $preexec_functions ]] && preexec_functions=()
 preexec_functions=($preexec_functions tabtitle_preexec)
 
-# 個別環境設定
-export GOPATH=$HOME/go
-export PATH=$PATH:/usr/local/go/bin
-export TERM="cygwin"
-export PATH=$PATH:$HOME/.yarn/bin
-
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
