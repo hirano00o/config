@@ -61,8 +61,7 @@ augroup grepwindow
 augroup END
 
 if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
-  " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-  "     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   " :PlugInstallでインストール
   call plug#begin()
     Plug 'fatih/vim-go'                         " goの機能拡張
@@ -75,6 +74,14 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'cohama/lexima.vim'                    " 括弧の補完
     Plug 'itchyny/lightline.vim'                " ステータスライン拡張
     Plug 'morhetz/gruvbox'                      " カラースキーム
+    Plug 'scrooloose/syntastic'                 " syntastic
+    Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'othree/javascript-libraries-syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'othree/html5.vim'
+    Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'maksimr/vim-jsbeautify'
   call plug#end()
 endif
 
@@ -140,4 +147,32 @@ let g:go_fmt_autosave = 1           " 保存時にfmtを実行する
 let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"  " 不要なimportを削除する
 let g:go_def_mode = 'gopls'
+
+" syntastic設定
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_javascript_checkers = ['eslint']
+
+" javascript-libraries-syntax設定
+augroup EnableJS
+    autocmd!
+augroup END
+
+function! EnableJavascript()
+    let g:used_javascript_libs = 'jquery,underscore,react,vue,jasmine,chai,d3'
+    let b:javascript_lib_use_jquery = 1
+    let b:javascript_lib_use_underscore = 1
+    let b:javascript_lib_use_react = 1
+    let b:javascript_lib_use_vue = 1
+    let b:javascript_lib_use_jasmine = 1
+    let b:javascript_lib_use_chai = 1
+    let b:javascript_lib_use_d3 = 1
+endfunction
+autocmd EnableJS FileType javascript,javascript.jsx call EnableJavascript()
+
+" jsbeautify
+map <c-f> :call JsBeautify()<cr>
 

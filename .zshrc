@@ -18,8 +18,6 @@ setopt magic_equal_subst # コマンドラインの引数で --prefix=/usr な�
 
 setopt auto_pushd # 遷移したディレクトリをスタックする
 setopt pushd_ignore_dups # 重複したディレクトリはスタックしない
-alias ls='ls -G'
-alias ll='ls -lG'
 
 # backspace,deleteキーを使えるように
 # stty erase ^H
@@ -44,15 +42,17 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # 補完で大文字にも�
 zstyle ':completion:*' verbose true # 補完を詳細に表示
 zstyle ':completion:*' use-cache true # キャッシュによる補完の高速化
 zstyle ':completion:*' completer _expand _complete _history _prefix # 補完の出し方
-zstyle ':completion:*:messages' format '%F{YELLOW}%d'$DEFAULT
-zstyle ':completion:*:warnings' format '%F{RED}No matches for:''%F{YELLOW} %d'$DEFAULT
-zstyle ':completion:*:descriptions' format '%F{YELLOW}completing %B%d%b'$DEFAULT
-zstyle ':completion:*:corrections' format '%F{YELLOW}%B%d ''%F{RED}(errors: %e)%b'$DEFAULT
+zstyle ':completion:*:messages' format '%F{YELLOW}%d%F{DEFAULT}'
+zstyle ':completion:*:warnings' format '%F{RED}No matches for:''%F{YELLOW} %d%F{DEFAULT}'
+zstyle ':completion:*:descriptions' format '%F{YELLOW}completing %B%d%b%F{DEFAULT}'
+zstyle ':completion:*:corrections' format '%F{YELLOW}%B%d ''%F{RED}(errors: %e)%b%F{DEFAULT}'
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*' group-name ''
 
 export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # 補完候補に色を付ける
+alias ls='ls --color'
+alias ll='ls -l'
 
 # 複数ファイルのmv 例　zmv *.txt *.txt.bk
 autoload -Uz zmv
@@ -156,4 +156,8 @@ preexec_functions=($preexec_functions tabtitle_preexec)
 # 個別環境設定
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin
+export TERM="cygwin"
+export PATH=$PATH:$HOME/.yarn/bin
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
