@@ -175,5 +175,5 @@ endfunction
 autocmd EnableJS FileType javascript,javascript.jsx call EnableJavascript()
 
 " jsbeautify
-map <c-f> :call JsBeautify()<cr>
+map <c-j> :call JsBeautify()<cr>
 
