@@ -83,6 +83,8 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
     " jsbeautifyの設定 -> https://github.com/maksimr/vim-jsbeautify#examples
     Plug 'maksimr/vim-jsbeautify'
+    Plug 'Valloric/YouCompleteMe', { 'do': './install.py'  }            " Python補完
+    Plug 'nvie/vim-flake8'                                              " Python Flake8
   call plug#end()
 endif
 
@@ -177,3 +179,40 @@ autocmd EnableJS FileType javascript,javascript.jsx call EnableJavascript()
 " jsbeautify
 map <c-j> :call JsBeautify()<cr>
 
+" youcompleteme
+let g:ycm_global_ycm_extra_conf = "$HOME/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py"
+let g:ycm_auto_trigger = 1
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_server_python_interpreter = "/usr/bin/python3.8"
+let g:ycm_autoclose_preview_window_after_insertion = 1
+
+" autopep8
+function! Preserve(command)
+    " Save the last search.
+    let search = @/
+    " Save the current cursor position.
+    let cursor_position = getpos('.')
+    " Save the current window position.
+    normal! H
+    let window_position = getpos('.')
+    call setpos('.', cursor_position)
+    " Execute the command.
+    execute a:command
+    " Restore the last search.
+    let @/ = search
+    " Restore the previous window position.
+    call setpos('.', window_position)
+    normal! zt
+    " Restore the previous cursor position.
+    call setpos('.', cursor_position)
+endfunction
+
+function! Autopep8()
+    call Preserve(':silent %!autopep8 --ignore=E501 -')
+endfunction
+
+augroup python_pep
+	autocmd!
+	autocmd BufWrite *.py :call Autopep8()
+	autocmd BufWrite *.py :call Flake8()
+augroup END
