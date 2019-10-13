@@ -85,6 +85,8 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'maksimr/vim-jsbeautify'
     Plug 'Valloric/YouCompleteMe', { 'do': './install.py'  }            " Python補完
     Plug 'nvie/vim-flake8'                                              " Python Flake8
+    Plug 'tpope/vim-markdown'                   " markdown編集
+    Plug 'previm/previm'                        " markdown preview
   call plug#end()
 endif
 
@@ -216,3 +218,12 @@ augroup python_pep
 	autocmd BufWrite *.py :call Autopep8()
 	autocmd BufWrite *.py :call Flake8()
 augroup END
+
+" vim-markdown
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
+let g:markdown_minlines = 100
+
+" previm
+let g:previm_open_cmd = '/mnt/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe'
+let g:previm_enable_realtime = 1
+let g:previm_wsl_mode = 1
