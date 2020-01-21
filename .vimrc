@@ -1,4 +1,7 @@
 set term=xterm-256color             " 256色で表示する
+" set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[38;2;%lu;%lu;%lum"
 set encoding=utf-8                  " エンコーディングをUTF-8にする
 set fileencodings=utf-8,sjis,cp932  " 設定の順番の文字コードでファイルを開く
 set fileformats=unix,dos,mac        " 設定の順番で改行コードを開く
@@ -10,7 +13,7 @@ set noswapfile                      " スワップファイルは作成しない
 set autoread                        " 編集中のファイルが変更された場合、自動で読み直し
 " set hidden                          " 未保存のファイルがあっても、別ファイルを開く
 set showcmd                         " 入力コマンドをステータスに表示する
-set cursorline                      " 現行を強調表示する
+" set cursorline                      " 現行を強調表示する
 set cursorcolumn                    " 現列を強調表示する
 
 if !has('gui_running')              " CUI使用時
@@ -33,20 +36,44 @@ set smartcase                       " 検索に大文字を使うと、大文字
 set incsearch                       " リアルタイム検索する
 set wrapscan                        " 最後まで検索すると、最初に戻る
 set hlsearch                        " 検索結果をハイライト表示する
+hi Search ctermbg=cyan              " ハイライトの背景をシアン
+hi Search ctermfg=white             " ハイライト文字を白
 
 set scrolloff=3                     " 3行前から画面をスクロールする
 set nowrap                          " テキストの折返しをしない
 set ruler                           " ルーラーを表示する
+set number                          " 行番号を表示する
+set relativenumber                  " 行番号を相対表示する
 " カラムラインを120列目に引く
-let &colorcolumn=join(range(121,999),",")
-hi ColorColumn ctermbg=235 guibg=#2c2d27
+if (exists('+colorcolumn'))
+    set colorcolumn=120
+    hi ColorColumn ctermbg=grey
+endif
 " Esc2回でハイライトを消す
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
+nmap <C-j><C-j> :nohlsearch<CR><Esc>
 
 " Hで行頭へ移動する
 map H ^
 " Lで行末へ移動する
 map L $
+" Ctrl+jでEsc
+noremap <C-j> <Esc>
+noremap! <C-j> <Esc>
+
+" WSL clipboardへコピー
+nnoremap <silent> <Space>y :.w !win32yank.exe -i<CR><CR>
+vnoremap <silent> <Space>y :w !win32yank.exe -i<CR><CR>
+nnoremap <silent> <Space>p :r !win32yank.exe -o<CR>
+vnoremap <silent> <Space>p :r !win32yank.exe -o<CR>
+
+augroup fileTypeIndent
+    autocmd!
+    autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.yml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.js setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.vue setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
 
 " undoを保存する
 if has('persistent_undo')
@@ -73,7 +100,7 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'junegunn/fzf.vim'
     Plug 'cohama/lexima.vim'                    " 括弧の補完
     Plug 'itchyny/lightline.vim'                " ステータスライン拡張
-    Plug 'morhetz/gruvbox'                      " カラースキーム
+    " Plug 'morhetz/gruvbox'                      " カラースキーム
     Plug 'scrooloose/syntastic'                 " syntastic
     Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
@@ -87,17 +114,25 @@ if filereadable($HOME.'/.vim/autoload/plug.vim')  " vim-plugを利用する
     Plug 'nvie/vim-flake8'                                              " Python Flake8
     Plug 'tpope/vim-markdown'                   " markdown編集
     Plug 'previm/previm'                        " markdown preview
+    Plug 'alvan/vim-closetag'                   " html, xml tag auto closed
+    Plug 'simeji/winresizer'                    " resize window
+    Plug 'prabirshrestha/async.vim'
+    Plug 'prabirshrestha/asyncomplete.vim'
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'prabirshrestha/vim-lsp'
+    Plug 'mattn/vim-lsp-settings'
+    Plug 'xavierchow/vim-swagger-preview'       " swagger preview in browser
   call plug#end()
 endif
 
 syntax enable                       " シンタックスをONにする
-set background=dark                 " 背景をダークモードにする
-if filereadable($HOME.'/.vim/plugged/gruvbox/autoload/gruvbox.vim')
-    colorscheme gruvbox
-endif
+" set background=dark                 " 背景をダークモードにする
+" if filereadable($HOME.'/.vim/plugged/gruvbox/autoload/gruvbox.vim')
+"     colorscheme gruvbox
+" endif
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'landscape',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste'  ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified'  ] ]
@@ -110,9 +145,8 @@ let g:lightline = {
 let g:lightline.component = {
     \ 'lineinfo': '[%3l/%3L]:%-2v'
     \ }
-"set noshowmode                      " vimのモードを非表示にする
 set laststatus=2                    " ステータスラインを常に表示する
-set cmdheight=2                     " ステータスライン下のメッセージ表示行数
+set cmdheight=1                     " ステータスライン下のメッセージ表示行数
 
 " ペースト時に自動インデントを無効化する
 if &term =~ "xterm"
@@ -129,29 +163,60 @@ endif
 
 " vim-go設定
 let mapleader = "\<Space>"            " <leader>を<Space>にする
-au FileType go nmap <leader>r <Plug>(go-run)
-au FileType go nmap <leader>b <Plug>(go-build)
-au FileType go nmap <leader>t <Plug>(go-test)
-au FileType go nmap <leader>c <Plug>(go-coverage)
-au FileType go nmap <Leader>i <Plug>(go-info)
-au FileType go nmap <leader>s <Plug>(go-def-split)
-au FileType go nmap <leader>v <Plug>(go-def-vertical)
+" au FileType go nmap <leader>r <Plug>(go-run)
+" au FileType go nmap <leader>b <Plug>(go-build)
+" au FileType go nmap <leader>t <Plug>(go-test)
+" au FileType go nmap <leader>c <Plug>(go-coverage)
+" au FileType go nmap <Leader>i <Plug>(go-info)
+" au FileType go nmap <leader>s <Plug>(go-def-split)
+" au FileType go nmap <leader>v <Plug>(go-def-vertical)
 
-au FileType go :highlight goErr cterm=bold ctermfg=214
-au FileType go :match goErr /\<err\>/
+" au FileType go :highlight goErr cterm=bold ctermfg=214
+" au FileType go :match goErr /\<err\>/
+
+let g:go_def_mapping_enabled = 0
+let g:go_doc_keywordprg_enabled = 0
 
 " ハイライト表示
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
-let g:go_metalinter_autosave = 1    " 保存時にvet, lint errcheckを実行する
-let g:go_fmt_autosave = 1           " 保存時にfmtを実行する
-let g:go_fmt_fail_silently = 1
+let g:go_metalinter_autosave = 0
+" let g:go_metalinter_autosave = ['vet', 'golint', 'gopls']    " 保存時にvet, lint を実行する
+" let g:go_fmt_autosave = 1           " 保存時にfmtを実行する
+" let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"  " 不要なimportを削除する
-let g:go_def_mode = 'gopls'
+
+if executable('gopls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'gopls',
+        \ 'cmd': {server_info->['gopls']},
+        \ 'whitelist': ['go'],
+        \ })
+    au FileType go setlocal omnifunc=lsp#complete
+    au FileType go let g:lsp_diagnostics_echo_cursor = 1
+    au FileType go let g:lsp_signs_error = {'text': '✗'}
+    au FileType go let g:lsp_signs_warning = {'text': '‼'}
+    au FileType go let g:lsp_signs_hint = {'text': '!'}
+    au BufWritePre *.go LspDocumentFormatSync
+endif
+nmap <silent> <C-]> :LspDefinition<CR>
+nmap <silent> K :LspHover<CR>
+nmap <silent> <f2> :LspRename<CR>
+nmap <silent> td :LspTypeDefinition<CR>
+nmap <silent> <Leader>r :LspReferences<CR>
+nmap <silent> <Leader>i :LspImplementation<CR>
+nmap <silent> <Leader>d :LspDocumentDiagnostics<CR>
+nmap <silent> <Leader>n :LspNextDiagnostic<CR>
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:asyncomplete_popup_delay = 200
+let g:lsp_text_edit_enabled = 0
 
 " syntastic設定
 set statusline+=%#warningmsg#
@@ -179,14 +244,14 @@ endfunction
 autocmd EnableJS FileType javascript,javascript.jsx call EnableJavascript()
 
 " jsbeautify
-map <c-j> :call JsBeautify()<cr>
+map <leader>j :call JsBeautify()<cr>
 
 " youcompleteme
-let g:ycm_global_ycm_extra_conf = "$HOME/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py"
-let g:ycm_auto_trigger = 1
-let g:ycm_min_num_of_chars_for_completion = 1
-let g:ycm_server_python_interpreter = "/usr/bin/python3.8"
-let g:ycm_autoclose_preview_window_after_insertion = 1
+au FileType py let g:ycm_global_ycm_extra_conf = "$HOME/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py"
+au FileType py let g:ycm_auto_trigger = 1
+au FileType py let g:ycm_min_num_of_chars_for_completion = 1
+au FileType py let g:ycm_server_python_interpreter = "/usr/bin/python3.8"
+au FileType py let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " autopep8
 function! Preserve(command)
@@ -227,3 +292,11 @@ let g:markdown_minlines = 100
 let g:previm_open_cmd = '/mnt/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe'
 let g:previm_enable_realtime = 1
 let g:previm_wsl_mode = 1
+
+" vim-closetag
+let g:closetag_filenames = '*.html,*.vue'
+
+" winresizer
+let g:winresizer_vert_resize = 1
+let g:winresizer_horiz_resize = 1
+

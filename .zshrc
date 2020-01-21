@@ -49,10 +49,16 @@ zstyle ':completion:*:corrections' format '%F{YELLOW}%B%d ''%F{RED}(errors: %e)%
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*' group-name ''
 
-export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+export LS_COLORS='di=36:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # 補完候補に色を付ける
 alias ls='ls --color'
-alias ll='ls -l'
+alias ll='ls -ltr'
+alias c='clear'
+
+alias vm='vim ~/.vimrc'
+alias vz='vim ~/.zshrc'
+
+bindkey -M viins '^j' vi-cmd-mode
 
 # 複数ファイルのmv 例　zmv *.txt *.txt.bk
 autoload -Uz zmv
@@ -83,16 +89,6 @@ function tmux_automatically_attach_session()
 {
   if is_screen_or_tmux_running; then
     ! is_exists 'tmux' && return 1
-
-    if is_tmux_runnning; then
-      echo "${fg_bold[red]} _____ __  __ _   ___  __ ${reset_color}"
-      echo "${fg_bold[red]}|_   _|  \/  | | | \ \/ / ${reset_color}"
-      echo "${fg_bold[red]}  | | | |\/| | | | |\  /  ${reset_color}"
-      echo "${fg_bold[red]}  | | | |  | | |_| |/  \  ${reset_color}"
-      echo "${fg_bold[red]}  |_| |_|  |_|\___//_/\_\ ${reset_color}"
-    elif is_screen_running; then
-      echo "This is on screen."
-    fi
   else
     if shell_has_started_interactively && ! is_ssh_running; then
       if ! is_exists 'tmux'; then
@@ -154,3 +150,4 @@ tabtitle_preexec() {
 preexec_functions=($preexec_functions tabtitle_preexec)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
