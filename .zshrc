@@ -29,7 +29,8 @@ select-word-style default
 zstyle ':zle:*' word-chars "_-./;@"
 zstyle ':zle:*' word-style unspecified
 
-PROMPT="%{${fg_bold[green]}%}>%{${fg_bold[yellow]}%}>%{${fg_bold[red]}%}>%{${reset_color}%} "
+PROMPT="
+%{${fg_bold[green]}%}>%{${fg_bold[yellow]}%}>%{${fg_bold[red]}%}>%{${reset_color}%} "
 
 local DEFAULT=$'%{^[[m%}'$
 local RED=$'%{^[[1;31m%}'$
