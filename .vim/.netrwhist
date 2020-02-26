@@ -1,9 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/Users/hirano00o/go/third-party/src/ov/app'
-let g:netrw_dirhist_2='/Users/hirano00o/go/third-party/src/ov/web/view'
-let g:netrw_dirhist_3='/Users/hirano00o/go/third-party/src/ov/sh'
-let g:netrw_dirhist_4='/Users/hirano00o/go/third-party/src/oauth/design'
-let g:netrw_dirhist_5='/Users/hirano00o/go/third-party/src/go-oauth2-server/web/includes'
-let g:netrw_dirhist_6='/Users/hirano00o/project/todolist/src/js/stores'
-let g:netrw_dirhist_7='/Users/hirano00o/go/third-party/src/uploader'
