@@ -28,6 +28,10 @@ set shiftwidth=4                    " 自動インデントは4文字
 set expandtab                       " タブを空白文字にする
 set showmatch                       " 対応する括弧を強調表示する
 
+noremap ^? ^H
+noremap! ^? ^H
+set backspace=indent,eol,start
+
 set wildmenu                        " TABでファイル名を補完する
 set wildmode=full                   " TABを押すごとに次のファイル名を補完する
 set ignorecase                      " 検索に大文字小文字を区別しない
@@ -45,8 +49,8 @@ set number                          " 行番号を表示する
 set relativenumber                  " 行番号を相対表示する
 " カラムラインを120列目に引く
 if (exists('+colorcolumn'))
-    set colorcolumn=120
-    hi ColorColumn ctermbg=white
+    let &colorcolumn=join(range(121,999),",")
+    hi ColorColumn ctermbg=235 guibg=#2c2d27
 endif
 
 " undoを保存する
