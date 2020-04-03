@@ -1,13 +1,16 @@
 # 個別環境設定
-export GOPATH=$HOME/go
-export GOWORK=$HOME/work/go
-export GO111MODULES=on
+export GOENV_ROOT=$HOME/.goenv
+export PATH=$GOENV_ROOT/bin:$PATH
+eval "$(goenv init -)"
+export GOPATH="$GOROOT/bin:$PATH"
+export PATH="$PATH:$GOPATH/bin"
+
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export TERM="cygwin"
 export PATH=$PATH:$HOME/.yarn/bin
 
-export PYENV_ROOT=$HOME/.pyenv
-export PATH=$PATH:$PYENV_ROOT/bin
+export PYENV_ROOT=$HOME/.pyenv/shims
+export PATH=$PYENV_ROOT/bin:$PATH
 
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
