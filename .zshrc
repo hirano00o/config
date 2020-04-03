@@ -48,13 +48,14 @@ zstyle ':completion:*:corrections' format '%F{YELLOW}%B%d ''%F{RED}(errors: %e)%
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*' group-name ''
 
-export LS_COLORS='di=36:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # 補完候補に色を付ける
 case ${OSTYPE} in
     darwin*)
+        export LSCOLORS=gxfxcxdxbxegedabagacad
         alias ls='ls -FG'
         ;;
     Linux*)
+        export LS_COLORS='di=36:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
         alias ls='ls --color'
         ;;
 esac
