@@ -1,0 +1,129 @@
+set term=xterm-256color             " 256色で表示する
+if exists('&termguicolors')
+  set termguicolors
+endif
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[38;2;%lu;%lu;%lum"
+set encoding=utf-8                  " エンコーディングをUTF-8にする
+set fileencodings=utf-8,sjis,cp932  " 設定の順番の文字コードでファイルを開く
+set fileformats=unix,dos,mac        " 設定の順番で改行コードを開く
+set nofixendofline                  " EOFを元のファイルと同じ状態にする
+
+set ambiwidth=double                " ○文字や□文字でもカーソル位置を保持する
+set nobackup                        " バックアップファイルは作成しない
+set noswapfile                      " スワップファイルは作成しない
+set autoread                        " 編集中のファイルが変更された場合、自動で読み直し
+set showcmd                         " 入力コマンドをステータスに表示する
+
+if !has('gui_running')              " CUI使用時
+  set mouse=                        " マウス操作をOFFにする
+  set ttimeoutlen=0                 " insertからnormalに戻るときの遅延を解消する
+  set t_Co=256
+endif
+
+set autoindent                      " 改行時に前行のインデントを保持する
+set smartindent                     " 改行時に前行末尾に合わせて、インデントを増減する
+set tabstop=4                       " タブは設定文字数分で表示する
+set shiftwidth=4                    " 自動インデントは4文字
+set expandtab                       " タブを空白文字にする
+set showmatch                       " 対応する括弧を強調表示する
+
+noremap ^? ^H
+noremap! ^? ^H
+set backspace=indent,eol,start
+
+set wildmenu                        " TABでファイル名を補完する
+set wildmode=full                   " TABを押すごとに次のファイル名を補完する
+set ignorecase                      " 検索に大文字小文字を区別しない
+set smartcase                       " 検索に大文字を使うと、大文字小文字を区別する
+set incsearch                       " リアルタイム検索する
+set wrapscan                        " 最後まで検索すると、最初に戻る
+set hlsearch                        " 検索結果をハイライト表示する
+hi Search ctermbg=cyan              " ハイライトの背景をシアン
+hi Search ctermfg=white             " ハイライト文字を白
+
+set scrolloff=3                     " 3行前から画面をスクロールする
+set nowrap                          " テキストの折返しをしない
+set ruler                           " ルーラーを表示する
+set number                          " 行番号を表示する
+set relativenumber                  " 行番号を相対表示する
+" カラムラインを120列目に引く
+if (exists('+colorcolumn'))
+    let &colorcolumn=join(range(121,999),",")
+    hi ColorColumn ctermbg=235 guibg=#2c2d27
+endif
+
+" undoを保存する
+if has('persistent_undo')
+    set undodir=~/.vim/undo
+    set undofile
+endif
+
+let mapleader = "\<Space>"            " <leader>を<Space>にする
+" grepした結果をquickfixに表示する
+augroup grepwindow
+    autocmd!
+    au QuickFixCmdPost *grep* cwindow
+augroup END
+
+syntax enable                       " シンタックスをONにする
+
+set laststatus=2                    " ステータスラインを常に表示する
+set cmdheight=1                     " ステータスライン下のメッセージ表示行数
+
+set surround                        " surround.vim
+set ideajoin
+set multiple-cursors
+set commentary
+set easymotion
+
+" Esc2回でハイライトを消す
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
+nmap <C-j><C-j> :nohlsearch<CR><Esc>
+
+" Hで行頭へ移動する
+map H ^
+" Lで行末へ移動する
+map L $
+" Ctrl+jでEsc
+inoremap <C-j> <Esc>
+inoremap! <C-j> <Esc>
+
+augroup fileTypeIndent
+    autocmd!
+    autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.yml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.js setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.vue setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
+
+" ペースト時に自動インデントを無効化する
+if &term =~ "xterm"
+    let &t_SI .= "\e[?2004h"
+    let &t_EI .= "\e[?2004l"
+    let &pastetoggle = "\e[201~"
+    function XTermPasteBegin(ret)
+        set paste
+        return a:ret
+    endfunction
+
+    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
+endif
+nnoremap <C-o> :<C-u>action Back<CR>
+nnoremap <C-i> :<C-u>action Forward<CR>
+nnoremap <C-S-o> <C-o>
+nnoremap <C-S-i> <C-i>
+nnoremap [m :<C-u>action MethodUp<CR>
+nnoremap ]m :<C-u>action MethodDown<CR>
+nnoremap [c :<C-u>action VcsShowPrevChangeMarker<CR>
+nnoremap ]c :<C-u>action VcsShowNextChangeMarker<CR>
+nnoremap [e :<C-u>action GotoPreviousError<CR>
+nnoremap ]e :<C-u>action GotoNextError<CR>
+nnoremap [<Space> O<Esc>j
+nnoremap ]<Space> o<Esc>k
+nnoremap cre :<C-u>action RenameElement<CR>
+nnoremap cS :<C-u>action ChangeSignature<CR>
+nnoremap cts :<C-u>action ChangeTypeSignature<CR>
+
+set clipboard-=ideaput
+set clipboard+=unnamed
