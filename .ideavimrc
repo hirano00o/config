@@ -68,6 +68,10 @@ nmap <C-j><C-j> :nohlsearch<CR><Esc>
 " Ctrl+jでEsc
 inoremap <C-j> <Esc>
 
+" タブ移動
+nmap <C-h> gT
+nmap <C-l> gt
+
 augroup fileTypeIndent
     autocmd!
     autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
