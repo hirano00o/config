@@ -59,17 +59,46 @@ case ${OSTYPE} in
         alias ls='ls --color'
         ;;
 esac
-alias ll='ls -ltr'
-alias c='clear'
 
+alias c='clear'
+alias d='docker'
+alias dc='docker-compose'
+alias dated='date +%Y%m%d'
+alias datef='date +%Y%m%d%H%M%S'
+alias datet='date +%H%M%S'
+alias m='make'
+alias mk='mkdir -p'
+alias g='git'
+alias ga='git add'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit'
+alias gco='git checkout'
+alias gn='git checkout -b'
+alias gd='git diff'
+alias gf='git fetch'
+alias gm='git merge'
+alias gmm='git merge master'
+alias gps='git push'
+alias gpl='git pull'
+alias gs='git status'
+alias ll='ls -ltr'
+alias v='vim'
 alias vm='vim ~/.vimrc'
 alias vz='vim ~/.zshrc'
-
-bindkey -M viins '^j' vi-cmd-mode
-
+alias y='yarn'
 # 複数ファイルのmv 例　zmv *.txt *.txt.bk
 autoload -Uz zmv
 alias zmv='noglob zmv -W'
+
+alias -g A='| awk'
+alias -g C='| pbcopy'
+alias -g G='| grep'
+alias -g H='| head'
+alias -g T='| tail'
+alias -g X='| xargs'
+
+bindkey -M viins '^j' vi-cmd-mode
 
 # git設定
 RPROMPT="%{${fg[cyan]}%}[%~]%{${reset_color}%}"
