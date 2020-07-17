@@ -14,6 +14,7 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # Swagger ui preview
 function swagger_yaml2json() {
