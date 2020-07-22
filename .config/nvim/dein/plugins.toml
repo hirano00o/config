@@ -3,6 +3,8 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
+build = './install --all'
+depends = 'fzf'
 hook_add = 'source ~/.config/nvim/plugins/fzf.vim'
 
 [[plugins]]
@@ -36,25 +38,12 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'osyo-manga/vim-anzu'
+repo = 'autozimu/LanguageClient-neovim'
+rev = 'next'
+build = 'bash install.sh'
 hook_add = '''
-  source ~/.config/nvim/plugins/anzu.vim
+  source ~/.config/nvim/plugins/languageclient.vim
 '''
-
-[[plugins]]
-repo = 'prabirshrestha/vim-lsp'
-hook_add = '''
-  source ~/.config/nvim/plugins/vim-lsp.vim
-'''
-
-[[plugins]]
-repo = 'mattn/vim-lsp-settings'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete.vim'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete-lsp.vim'
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
@@ -62,7 +51,3 @@ on_event = 'InsertEnter'
 hook_add = '''
   source ~/.config/nvim/plugins/deoplete.vim
 '''
-
-[[plugins]]
-repo = 'lighttiger2505/deoplete-vim-lsp'
-
