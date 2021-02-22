@@ -6,9 +6,8 @@ nmap <C-j><C-j> :nohlsearch<CR><Esc>
 map H ^
 " Lで行末へ移動する
 map L $
-" Ctrl+jでEsc
-noremap <C-j> <Esc>
-noremap! <C-j> <Esc>
+" jjでEsc
+inoremap <silent>jj <Esc>
 
 if has('win32') || has('win64')
   " WSL clipboardへコピー

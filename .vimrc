@@ -1,9 +1,11 @@
-set term=xterm-256color             " 256色で表示する
-if exists('&termguicolors')
+if has('win32')
   set termguicolors
+  set runtimepath+=$HOME/.vim,$HOME/.vim/after
+else
+  set term=xterm-256color             " 256色で表示する
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[38;2;%lu;%lu;%lum"
 endif
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[38;2;%lu;%lu;%lum"
 set encoding=utf-8                  " エンコーディングをUTF-8にする
 set fileencodings=utf-8,sjis,cp932  " 設定の順番の文字コードでファイルを開く
 set fileformats=unix,dos,mac        " 設定の順番で改行コードを開く
@@ -45,13 +47,23 @@ hi Search ctermfg=white             " ハイライト文字を白
 set scrolloff=3                     " 3行前から画面をスクロールする
 set nowrap                          " テキストの折返しをしない
 set ruler                           " ルーラーを表示する
-set number                          " 行番号を表示する
 set relativenumber                  " 行番号を相対表示する
 " カラムラインを120列目に引く
 if (exists('+colorcolumn'))
     let &colorcolumn=join(range(121,999),",")
     hi ColorColumn ctermbg=235 guibg=#2c2d27
 endif
+
+" Popup color
+hi Pmenu ctermbg=8 ctermfg=1 guibg=#262626 guifg=#5fd7ff
+hi PmenuSel ctermbg=13 ctermfg=1
+hi SignColumn guibg=#808080
+
+" Spell check
+set spell
+set spelllang=en,cjk
+hi clear SpellBad
+hi SpellBad cterm=underline gui=underline
 
 " undoを保存する
 if has('persistent_undo')
@@ -73,38 +85,49 @@ set cmdheight=1                     " ステータスライン下のメッセー
 
 if filereadable($HOME.'/.vim/autoload/plug.vim')
   " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  call plug#begin()
-    "Plug 'SirVer/ultisnips'                     " スニペット
+  call plug#begin('~/.vim/plugged')
+    " Plug 'SirVer/ultisnips'                     " スニペット
     " goのスニペット -> https://github.com/fatih/vim-go/blob/master/gosnippets/UltiSnips/go.snippets
     Plug 'bronson/vim-trailing-whitespace'      " 行末のスペースをハイライト
     Plug 'Yggdroot/indentLine'                  " インデントを見やすくする
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }   " あいまい検索
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'junegunn/fzf.vim'
     Plug 'cohama/lexima.vim'                    " 括弧の補完
     Plug 'itchyny/lightline.vim'                " ステータスライン拡張
+    " JavaScript
     Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'othree/javascript-libraries-syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'othree/html5.vim'
+    Plug 'alvan/vim-closetag'                   " html, xml tag auto closed
     Plug 'maxmellon/vim-jsx-pretty', { 'for': ['javascript', 'javascript.jsx'] }
     " jsbeautifyの設定 -> https://github.com/maksimr/vim-jsbeautify#examples
     Plug 'maksimr/vim-jsbeautify'
+    " Python
     Plug 'nvie/vim-flake8'                      " Python Flake8
+
     Plug 'tpope/vim-markdown'                   " markdown編集
     Plug 'previm/previm'                        " markdown preview
-    Plug 'alvan/vim-closetag'                   " html, xml tag auto closed
     Plug 'simeji/winresizer'                    " resize window
-    Plug 'prabirshrestha/async.vim'
+
+    " Plug 'prabirshrestha/async.vim'
+
+    " LSP
     Plug 'prabirshrestha/asyncomplete.vim'
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
     Plug 'prabirshrestha/vim-lsp'
     Plug 'mattn/vim-lsp-settings'
     Plug 'mattn/vim-lsp-icons'
-    Plug 'mattn/vim-goimports'
-    "Plug 'hrsh7th/vim-vsnip'
-    "Plug 'hrsh7th/vim-vsnip-integ'
-    Plug 'xavierchow/vim-swagger-preview'       " swagger preview in browser
+    Plug 'thomasfaingnaert/vim-lsp-snippets'
+    Plug 'thomasfaingnaert/vim-lsp-ultisnips'
+    Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
+
+    "Plug 'mattn/vim-goimports'
+    "Plug 'xavierchow/vim-swagger-preview'       " swagger preview in browser
+    Plug 'mattn/vim-sonictemplate'
+    Plug 'twitvim/twitvim'
   call plug#end()
 endif
 

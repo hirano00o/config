@@ -1,3 +1,6 @@
+let g:indentLine_setColors = 0
+let g:indentLine_setColors_char = 'c'
+
 augroup fileTypeIndent
     autocmd!
     autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
