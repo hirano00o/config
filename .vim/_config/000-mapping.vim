@@ -57,8 +57,8 @@ endfor
 
 " tc で新しいタブを一番右に作る
 map <silent> [Tag]c :tablast <bar> tabnew<CR>
-" Ctrl-w でタブを閉じる
-map <silent> <C-w> :tabclose<CR>
+" td でタブを閉じる
+map <silent> [Tag]d :tabclose<CR>
 " Ctrl-l で右のタブ
 map <silent> <C-l> :tabnext<CR>
 " Ctrl-h で左のタブ
